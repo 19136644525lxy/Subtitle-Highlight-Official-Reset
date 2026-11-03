@@ -6,6 +6,10 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+base {
+	archivesName = project.archives_base_name
+}
+
 repositories {
 	flatDir {
 		dirs 'libs'
@@ -73,11 +77,10 @@ java {
 }
 
 jar {
-	def projectName = project.name
-	inputs.property "projectName", projectName
+	inputs.property "archivesName", project.base.archivesName
 
 	from("LICENSE") {
-		rename { "${it}_$projectName"}
+		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
 
