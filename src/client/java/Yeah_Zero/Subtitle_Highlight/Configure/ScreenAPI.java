@@ -53,35 +53,35 @@ public class ScreenAPI implements ModMenuApi {
                     Manager.settings.colorSettings.ambient = newValue;
                 }).build());
                 SubCategoryBuilder block = builder.entryBuilder().startSubCategory(Text.translatable("subtitle_highlight.configure.general.color.block")).setExpanded(true);
-                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.generic"), ColorCode.class, Manager.settings.colorSettings.block.generic).setDefaultValue(ColorCode.WHITE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.generic"), ColorCode.class, Manager.settings.colorSettings.block.generic).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.block.generic = newValue;
                 }).build());
-                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.interact"), ColorCode.class, Manager.settings.colorSettings.block.interact).setDefaultValue(ColorCode.AQUA).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.interact"), ColorCode.class, Manager.settings.colorSettings.block.interact).setDefaultValue(ColorCode.GREEN).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.block.interact = newValue;
                 }).build());
-                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.working"), ColorCode.class, Manager.settings.colorSettings.block.working).setDefaultValue(ColorCode.DARK_AQUA).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.working"), ColorCode.class, Manager.settings.colorSettings.block.working).setDefaultValue(ColorCode.YELLOW).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.block.working = newValue;
                 }).build());
                 block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.dangerous"), ColorCode.class, Manager.settings.colorSettings.block.dangerous).setDefaultValue(ColorCode.RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.block.dangerous = newValue;
                 }).build());
-                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.crop"), ColorCode.class, Manager.settings.colorSettings.block.crop).setDefaultValue(ColorCode.DARK_GREEN).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.crop"), ColorCode.class, Manager.settings.colorSettings.block.crop).setDefaultValue(ColorCode.GREEN).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.block.crop = newValue;
                 }).build());
-                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.other"), ColorCode.class, Manager.settings.colorSettings.block.other).setDefaultValue(ColorCode.DARK_GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                block.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.block.other"), ColorCode.class, Manager.settings.colorSettings.block.other).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.block.other = newValue;
                 }).build());
                 colorSettings.add(block.build());
-                colorSettings.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.enchant"), ColorCode.class, Manager.settings.colorSettings.enchant).setDefaultValue(ColorCode.DARK_PURPLE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                colorSettings.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.enchant"), ColorCode.class, Manager.settings.colorSettings.enchant).setDefaultValue(ColorCode.LIGHT_PURPLE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.enchant = newValue;
                 }).build());
                 SubCategoryBuilder entity = builder.entryBuilder().startSubCategory(Text.translatable("subtitle_highlight.configure.general.color.entity")).setExpanded(true);
                 SubCategoryBuilder mob = builder.entryBuilder().startSubCategory(Text.translatable("subtitle_highlight.configure.general.color.entity.mob")).setExpanded(true);
                 SubCategoryBuilder player = builder.entryBuilder().startSubCategory(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.player")).setExpanded(true);
-                player.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.player.attack"), ColorCode.class, Manager.settings.colorSettings.entity.mob.player.attack).setDefaultValue(ColorCode.GOLD).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                player.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.player.attack"), ColorCode.class, Manager.settings.colorSettings.entity.mob.player.attack).setDefaultValue(ColorCode.RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.mob.player.attack = newValue;
                 }).build());
-                player.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.player.hurt"), ColorCode.class, Manager.settings.colorSettings.entity.mob.player.hurt).setDefaultValue(ColorCode.DARK_RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                player.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.player.hurt"), ColorCode.class, Manager.settings.colorSettings.entity.mob.player.hurt).setDefaultValue(ColorCode.RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.mob.player.hurt = newValue;
                 }).build());
                 player.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.player.other"), ColorCode.class, Manager.settings.colorSettings.entity.mob.player.other).setDefaultValue(ColorCode.WHITE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
@@ -97,14 +97,14 @@ public class ScreenAPI implements ModMenuApi {
                 mob.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.hostile"), ColorCode.class, Manager.settings.colorSettings.entity.mob.hostile).setDefaultValue(ColorCode.RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.mob.hostile = newValue;
                 }).build());
-                mob.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.boss"), ColorCode.class, Manager.settings.colorSettings.entity.mob.boss).setDefaultValue(ColorCode.LIGHT_PURPLE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                mob.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.mob.boss"), ColorCode.class, Manager.settings.colorSettings.entity.mob.boss).setDefaultValue(ColorCode.DARK_PURPLE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.mob.boss = newValue;
                 }).build());
                 entity.add(mob.build());
                 entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.vehicle"), ColorCode.class, Manager.settings.colorSettings.entity.vehicle).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.vehicle = newValue;
                 }).build());
-                entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.projectile"), ColorCode.class, Manager.settings.colorSettings.entity.projectile).setDefaultValue(ColorCode.GOLD).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.projectile"), ColorCode.class, Manager.settings.colorSettings.entity.projectile).setDefaultValue(ColorCode.AQUA).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.projectile = newValue;
                 }).build());
                 entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.explosive"), ColorCode.class, Manager.settings.colorSettings.entity.explosive).setDefaultValue(ColorCode.RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
@@ -113,25 +113,25 @@ public class ScreenAPI implements ModMenuApi {
                 entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.decoration"), ColorCode.class, Manager.settings.colorSettings.entity.decoration).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.decoration = newValue;
                 }).build());
-                entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.other"), ColorCode.class, Manager.settings.colorSettings.entity.other).setDefaultValue(ColorCode.DARK_GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                entity.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.entity.other"), ColorCode.class, Manager.settings.colorSettings.entity.other).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.entity.other = newValue;
                 }).build());
                 colorSettings.add(entity.build());
                 SubCategoryBuilder item = builder.entryBuilder().startSubCategory(Text.translatable("subtitle_highlight.configure.general.color.item")).setExpanded(true);
-                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.weapon"), ColorCode.class, Manager.settings.colorSettings.item.weapon).setDefaultValue(ColorCode.GOLD).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.weapon"), ColorCode.class, Manager.settings.colorSettings.item.weapon).setDefaultValue(ColorCode.RED).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.item.weapon = newValue;
                 }).build());
-                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.armor"), ColorCode.class, Manager.settings.colorSettings.item.armor).setDefaultValue(ColorCode.DARK_GREEN).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.armor"), ColorCode.class, Manager.settings.colorSettings.item.armor).setDefaultValue(ColorCode.GOLD).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.item.armor = newValue;
                 }).build());
-                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.tool"), ColorCode.class, Manager.settings.colorSettings.item.tool).setDefaultValue(ColorCode.BLUE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.tool"), ColorCode.class, Manager.settings.colorSettings.item.tool).setDefaultValue(ColorCode.AQUA).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.item.tool = newValue;
                 }).build());
-                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.other"), ColorCode.class, Manager.settings.colorSettings.item.other).setDefaultValue(ColorCode.WHITE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                item.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.item.other"), ColorCode.class, Manager.settings.colorSettings.item.other).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.item.other = newValue;
                 }).build());
                 colorSettings.add(item.build());
-                colorSettings.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.other"), ColorCode.class, Manager.settings.colorSettings.other).setDefaultValue(ColorCode.WHITE).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
+                colorSettings.add(builder.entryBuilder().startEnumSelector(Text.translatable("subtitle_highlight.configure.general.color.other"), ColorCode.class, Manager.settings.colorSettings.other).setDefaultValue(ColorCode.GRAY).setEnumNameProvider(ColorCode::colorTranslation).setSaveConsumer((newValue) -> {
                     Manager.settings.colorSettings.other = newValue;
                 }).build());
                 builder.getOrCreateCategory(Text.translatable("subtitle_highlight.configure.general")).addEntry(colorSettings.build());

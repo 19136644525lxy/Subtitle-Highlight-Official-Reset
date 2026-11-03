@@ -31,7 +31,12 @@ public class SubtitleEntryMixin {
     private Text text;
 
     private static final Logger PERF_LOGGER = LoggerFactory.getLogger("subtitle_highlight-performance");
-    
+    /**
+     * 性能统计默认关闭：字幕渲染是每帧热路径，统计本身会引入计时与全局锁开销。
+     * 需要排查时以 -Dsubtitle_highlight.debug.performance=true 启动游戏开启。
+     */
+    private static final boolean PERF_DEBUG = Boolean.getBoolean("subtitle_highlight.debug.performance");
+
     private static long totalTime = 0;
     private static int callCount = 0;
     private static long maxTime = 0;
@@ -41,26 +46,30 @@ public class SubtitleEntryMixin {
 
     @Inject(at = @At("RETURN"), method = "getText()Lnet/minecraft/text/Text;", cancellable = true)
     private void colorizeSubtitle(CallbackInfoReturnable<Text> cir) {
-        long startTime = System.nanoTime();
-        
+        long startTime = PERF_DEBUG ? System.nanoTime() : 0L;
+
         try {
             MutableText subtitleText = ((MutableText) this.text).formatted(Formatting.RESET);
             if (subtitleText.getContent() instanceof TranslatableTextContent) {
-                long customCheckStart = System.nanoTime();
+                long customCheckStart = PERF_DEBUG ? System.nanoTime() : 0L;
                 for (Settings.Custom custom : Manager.settings.customList) {
                     if (((TranslatableTextContent) subtitleText.getContent()).getKey().equals(custom.translationKey)) {
                         cir.setReturnValue(subtitleText.setStyle(subtitleText.getStyle().withColor(custom.color).withObfuscated(custom.obfuscated).withBold(custom.bold).withStrikethrough(custom.strikethrough).withUnderline(custom.underline).withItalic(custom.italic)));
                         return;
                     }
                 }
-                long customCheckTime = System.nanoTime() - customCheckStart;
-                if (customCheckTime > 100000) {
-                    PERF_LOGGER.warn("Custom list check took {}us for {} entries", customCheckTime / 1000, Manager.settings.customList.size());
+                if (PERF_DEBUG) {
+                    long customCheckTime = System.nanoTime() - customCheckStart;
+                    if (customCheckTime > 100000) {
+                        PERF_LOGGER.warn("Custom list check took {}us for {} entries", customCheckTime / 1000, Manager.settings.customList.size());
+                    }
                 }
-                
+
                 String[] keyParts = ((TranslatableTextContent) subtitleText.getContent()).getKey().split("\\.");
-                if (keyParts[0].equals("subtitles")) {
-                    switch (keyParts[1]) {
+                if (keyParts.length > 1 && keyParts[0].equals("subtitles")) {
+                    String category = keyParts[1];
+                    String subType = keyParts.length > 2 ? keyParts[2] : "";
+                    switch (category) {
                         case "ambient", "weather" -> {
                             ColorCode colorCode = SubtitleTypeLoader.getColor("", "ambient");
                             if (colorCode != null) {
@@ -71,7 +80,7 @@ public class SubtitleEntryMixin {
                             return;
                         }
                         case "block" -> {
-                            if (keyParts[2].equals("generic")) {
+                            if (subType.equals("generic")) {
                                 ColorCode colorCode = SubtitleTypeLoader.getColor("block", "generic");
                                 if (colorCode != null) {
                                     cir.setReturnValue(subtitleText.formatted(colorCode.getFormatting()));
@@ -80,7 +89,7 @@ public class SubtitleEntryMixin {
                                 }
                                 return;
                             }
-                            String blockKey = keyParts[2];
+                            String blockKey = subType;
                             String subKey = keyParts.length > 3 ? keyParts[3] : "";
                             
                             if (SplitKeyArrays.interactSet.contains(blockKey)) {
@@ -126,7 +135,7 @@ public class SubtitleEntryMixin {
                             return;
                         }
                         case "entity" -> {
-                            String entityKey = keyParts[2];
+                            String entityKey = subType;
                             String subKey = keyParts.length > 3 ? keyParts[3] : "";
                             
                             if (entityKey.equals("generic") || entityKey.equals("player")) {
@@ -189,7 +198,7 @@ public class SubtitleEntryMixin {
                             return;
                         }
                         case "item" -> {
-                            String itemKey = keyParts[2];
+                            String itemKey = subType;
                             
                             if (SplitKeyArrays.weaponsSet.contains(itemKey)) {
                                 applyColor(cir, subtitleText, SubtitleTypeLoader.getColor("item", "weapon"), Manager.settings.colorSettings.item.weapon);
@@ -209,11 +218,13 @@ public class SubtitleEntryMixin {
                     }
                 }
             }
-            long apiStart = System.nanoTime();
+            long apiStart = PERF_DEBUG ? System.nanoTime() : 0L;
             Text processedText = SubtitleAPI.processSubtitle(subtitleText, Manager.settings);
-            long apiTime = System.nanoTime() - apiStart;
-            if (apiTime > 100000) {
-                PERF_LOGGER.warn("SubtitleAPI.processSubtitle took {}us", apiTime / 1000);
+            if (PERF_DEBUG) {
+                long apiTime = System.nanoTime() - apiStart;
+                if (apiTime > 100000) {
+                    PERF_LOGGER.warn("SubtitleAPI.processSubtitle took {}us", apiTime / 1000);
+                }
             }
             
             ColorCode colorCode = SubtitleTypeLoader.getColor("", "other");
@@ -225,31 +236,34 @@ public class SubtitleEntryMixin {
             
             cir.setReturnValue(processedText);
         } finally {
-            long elapsed = System.nanoTime() - startTime;
-            
-            synchronized (SubtitleEntryMixin.class) {
-                totalTime += elapsed;
-                callCount++;
-                maxTime = Math.max(maxTime, elapsed);
-                minTime = Math.min(minTime, elapsed);
-                
-                long now = System.currentTimeMillis();
-                if (now - lastLogTime >= LOG_INTERVAL) {
-                    if (callCount > 0) {
-                        double avgTime = (double) totalTime / callCount / 1000;
-                        PERF_LOGGER.info("Subtitle colorize stats - Calls: {}, Avg: {:.2f}us, Min: {}us, Max: {}us", 
-                            callCount, avgTime, minTime / 1000, maxTime / 1000);
-                    }
-                    totalTime = 0;
-                    callCount = 0;
-                    maxTime = 0;
-                    minTime = Long.MAX_VALUE;
-                    lastLogTime = now;
+            if (PERF_DEBUG) {
+                recordPerfStats(System.nanoTime() - startTime);
+            }
+        }
+    }
+
+    private static void recordPerfStats(long elapsed) {
+        synchronized (SubtitleEntryMixin.class) {
+            totalTime += elapsed;
+            callCount++;
+            maxTime = Math.max(maxTime, elapsed);
+            minTime = Math.min(minTime, elapsed);
+
+            long now = System.currentTimeMillis();
+            if (now - lastLogTime >= LOG_INTERVAL) {
+                if (callCount > 0) {
+                    PERF_LOGGER.info("Subtitle colorize stats - Calls: {}, Avg: {}us, Min: {}us, Max: {}us",
+                            callCount, String.format("%.2f", (double) totalTime / callCount / 1000), minTime / 1000, maxTime / 1000);
                 }
-                
-                if (elapsed > 1000000) {
-                    PERF_LOGGER.warn("colorizeSubtitle took {}ms - potential performance issue", elapsed / 1000000);
-                }
+                totalTime = 0;
+                callCount = 0;
+                maxTime = 0;
+                minTime = Long.MAX_VALUE;
+                lastLogTime = now;
+            }
+
+            if (elapsed > 1000000) {
+                PERF_LOGGER.warn("colorizeSubtitle took {}ms - potential performance issue", elapsed / 1000000);
             }
         }
     }

@@ -33,20 +33,14 @@ repositories {
 	mavenCentral()
 }
 
-fabricApi {
-	configureDataGeneration {
-		client = true
-	}
-}
-
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modImplementation name: 'cloth-config-21.11.153-fabric'
-	modImplementation name: '[模组菜单] modmenu-17.0.0'
+	modImplementation name: "cloth-config-${project.cloth_config_version}-fabric"
+	modImplementation name: "[模组菜单] modmenu-${project.modmenu_version}"
 
 	
 }

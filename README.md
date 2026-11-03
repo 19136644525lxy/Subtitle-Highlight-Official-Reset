@@ -26,6 +26,22 @@ Minecraft 字幕高亮模组 - 为字幕添加颜色和样式，提升游戏体�
 - Minecraft 1.21.1 (Fabric) - 位于 `1.21.1/` 目录
 - Minecraft 1.20.6 (Fabric) - 位于 `1.20.6/` 目录
 
+## NeoForge
+`neoforge/` 下的移植仍为未修改的 MDK 模板（示例方块、示例物品、示例标签页等），功能尚未实现，暂不发布。
+
+## 构建
+需要 JDK 21。
+
+```shell
+./gradlew build
+```
+
+产物位于 `build/libs/`。若 wrapper 因网络策略无法下载 Gradle 发行版，也可用本机 Gradle 9.x 直接构建：
+
+```shell
+gradle build
+```
+
 ## 安装方法
 1. 安装 Fabric Loader
 2. 将模组 JAR 文件放入 `mods` 目录
@@ -36,6 +52,8 @@ Minecraft 字幕高亮模组 - 为字幕添加颜色和样式，提升游戏体�
 
 ## 数据包支持
 创建 `data/subtitle_highlight/subtitle_types.json` 自定义字幕颜色配置
+
+数据包颜色优先级高于配置界面：仅当数据包未定义某个字幕类型时，才会使用 `config/subtitle_highlight.json` 中的颜色。内置数据包已覆盖全部类型，因此若不覆盖或移除内置数据包，配置界面中的颜色项不会生效。
 
 ## 开源协议
 本项目基于 **GNU Lesser General Public License v3.0** 发布。

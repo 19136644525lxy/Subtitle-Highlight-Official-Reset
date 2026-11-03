@@ -6,19 +6,22 @@ import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
 public class SubtitleAPI {
-    private static final List<SubtitleProcessor> processors = new ArrayList<>();
+    /** 渲染线程会遍历该列表，注册可能来自其他模组的初始化线程，故使用写时复制列表。 */
+    private static final List<SubtitleProcessor> processors = new CopyOnWriteArrayList<>();
 
     /**
      * 注册字幕处理器
      * @param processor 字幕处理器
      */
     public static void registerProcessor(SubtitleProcessor processor) {
-        processors.add(processor);
+        if (processor != null) {
+            processors.add(processor);
+        }
     }
 
     /**

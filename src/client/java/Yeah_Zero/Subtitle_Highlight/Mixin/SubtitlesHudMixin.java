@@ -22,8 +22,42 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Environment(EnvType.CLIENT)
 @Mixin(targets = "net.minecraft.client.gui.hud.SubtitlesHud")
 public class SubtitlesHudMixin {
+    /** 原版字幕条目默认存活时长（毫秒）。 */
+    private static final long VANILLA_SUBTITLE_DURATION_MS = 3000;
     private static double durationRatio;
-    
+
+    /**
+     * 字幕条目的起始时间字段。开发环境（Yarn 映射）名为 {@code startTime}，
+     * 生产环境（Intermediary 映射）名为 {@code field_1472}；两者都尝试，避免开发环境静默退化为固定透明度。
+     */
+    private static final ClassValue<java.lang.reflect.Field> START_TIME_FIELD = new ClassValue<>() {
+        @Override
+        protected java.lang.reflect.Field computeValue(Class<?> type) {
+            for (String name : new String[]{"startTime", "field_1472"}) {
+                try {
+                    java.lang.reflect.Field field = type.getDeclaredField(name);
+                    field.setAccessible(true);
+                    return field;
+                } catch (NoSuchFieldException | RuntimeException ignored) {
+                    // 尝试下一个候选名
+                }
+            }
+            return null;
+        }
+    };
+
+    private static Long readStartTime(Object subtitleEntry) {
+        java.lang.reflect.Field field = START_TIME_FIELD.get(subtitleEntry.getClass());
+        if (field == null) {
+            return null;
+        }
+        try {
+            return field.getLong(subtitleEntry);
+        } catch (IllegalAccessException e) {
+            return null;
+        }
+    }
+
     @Shadow
     @Final
     private MinecraftClient client;
@@ -31,27 +65,22 @@ public class SubtitlesHudMixin {
     @Redirect(method = "render(Lnet/minecraft/client/gui/DrawContext;)V", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;", ordinal = 0))
     private Object getSubtitleEntry(java.util.Iterator instance) {
         Object subtitleEntry = instance.next();
-        try {
-            java.lang.reflect.Field timeField = subtitleEntry.getClass().getDeclaredField("field_1472");
-            timeField.setAccessible(true);
-            long time = timeField.getLong(subtitleEntry);
-            durationRatio = (Util.getMeasuringTimeMs() - time) / (double) (Manager.settings.maxDuration);
-        } catch (Exception e) {
-            durationRatio = 0.5;
-        }
+        Long startTime = readStartTime(subtitleEntry);
+        long maxDuration = Manager.settings.maxDuration;
+        durationRatio = (startTime == null || maxDuration <= 0)
+                ? 0.0
+                : (Util.getMeasuringTimeMs() - startTime) / (double) maxDuration;
         return subtitleEntry;
     }
 
     @Redirect(method = "render(Lnet/minecraft/client/gui/DrawContext;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SubtitlesHud$SubtitleEntry;getTime()J"))
     private long redirectSubtitleTime(Object instance) {
-        try {
-            java.lang.reflect.Field timeField = instance.getClass().getDeclaredField("field_1472");
-            timeField.setAccessible(true);
-            long time = timeField.getLong(instance);
-            return (long) (time - 3000 * this.client.options.getNotificationDisplayTime().getValue() + Manager.settings.maxDuration * this.client.options.getNotificationDisplayTime().getValue());
-        } catch (Exception e) {
+        Long startTime = readStartTime(instance);
+        if (startTime == null) {
             return 0;
         }
+        double notifDisplayTime = this.client.options.getNotificationDisplayTime().getValue();
+        return (long) (startTime - VANILLA_SUBTITLE_DURATION_MS * notifDisplayTime + Manager.settings.maxDuration * notifDisplayTime);
     }
 
     @ModifyVariable(method = "render(Lnet/minecraft/client/gui/DrawContext;)V", at = @At("STORE"), ordinal = 7)

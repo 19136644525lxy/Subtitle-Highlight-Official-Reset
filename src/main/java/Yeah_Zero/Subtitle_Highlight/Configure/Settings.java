@@ -20,34 +20,34 @@ public class Settings {
     public class ColorSetting {
         public ColorCode ambient = ColorCode.DARK_BLUE;
         public Block block = new Block();
-        public ColorCode enchant = ColorCode.DARK_PURPLE;
+        public ColorCode enchant = ColorCode.LIGHT_PURPLE;
         public Entity entity = new Entity();
         public Item item = new Item();
-        public ColorCode other = ColorCode.WHITE;
+        public ColorCode other = ColorCode.GRAY;
 
         public class Item {
-            public ColorCode weapon = ColorCode.GOLD;
-            public ColorCode armor = ColorCode.DARK_GREEN;
-            public ColorCode tool = ColorCode.BLUE;
-            public ColorCode other = ColorCode.WHITE;
+            public ColorCode weapon = ColorCode.RED;
+            public ColorCode armor = ColorCode.GOLD;
+            public ColorCode tool = ColorCode.AQUA;
+            public ColorCode other = ColorCode.GRAY;
         }
 
         public class Block {
-            public ColorCode generic = ColorCode.WHITE;
-            public ColorCode interact = ColorCode.AQUA;
-            public ColorCode working = ColorCode.DARK_AQUA;
+            public ColorCode generic = ColorCode.GRAY;
+            public ColorCode interact = ColorCode.GREEN;
+            public ColorCode working = ColorCode.YELLOW;
             public ColorCode dangerous = ColorCode.RED;
-            public ColorCode crop = ColorCode.DARK_GREEN;
-            public ColorCode other = ColorCode.DARK_GRAY;
+            public ColorCode crop = ColorCode.GREEN;
+            public ColorCode other = ColorCode.GRAY;
         }
 
         public class Entity {
             public Mob mob = new Mob();
             public ColorCode vehicle = ColorCode.GRAY;
-            public ColorCode projectile = ColorCode.GOLD;
+            public ColorCode projectile = ColorCode.AQUA;
             public ColorCode explosive = ColorCode.RED;
             public ColorCode decoration = ColorCode.GRAY;
-            public ColorCode other = ColorCode.DARK_GRAY;
+            public ColorCode other = ColorCode.GRAY;
 
             public class Mob {
 
@@ -55,11 +55,11 @@ public class Settings {
                 public ColorCode passive = ColorCode.GREEN;
                 public ColorCode neutral = ColorCode.YELLOW;
                 public ColorCode hostile = ColorCode.RED;
-                public ColorCode boss = ColorCode.LIGHT_PURPLE;
+                public ColorCode boss = ColorCode.DARK_PURPLE;
 
                 public class Player {
-                    public ColorCode attack = ColorCode.GOLD;
-                    public ColorCode hurt = ColorCode.DARK_RED;
+                    public ColorCode attack = ColorCode.RED;
+                    public ColorCode hurt = ColorCode.RED;
                     public ColorCode other = ColorCode.WHITE;
                 }
             }
