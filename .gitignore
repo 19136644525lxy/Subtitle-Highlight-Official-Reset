@@ -57,9 +57,9 @@ logs/
 
 main.bat
 logs/
-neoforge/1.21.11/gradle-9.2.1/
 temp/
-neoforge/1.21.1/
-neoforge/*/TEMPLATE_LICENSE.txt
 run.log
 
+#neoforge
+# 未完成的 NeoForge 移植，暂不跟踪、不发布
+neoforge/
