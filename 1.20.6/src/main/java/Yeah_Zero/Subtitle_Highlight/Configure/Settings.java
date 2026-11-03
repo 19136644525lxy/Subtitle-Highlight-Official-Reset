@@ -14,6 +14,8 @@ public class Settings {
     public float bottomMargin = 30;
     public float sideMargin = 1;
     public Boolean ikunEasterEgg = true;
+    /** 数据包颜色是否优先于配置界面；默认 false，即配置界面优先。 */
+    public boolean datapackPriority = false;
     public ColorSetting colorSettings = new ColorSetting();
     public ArrayList<Custom> customList = new ArrayList<>();
 

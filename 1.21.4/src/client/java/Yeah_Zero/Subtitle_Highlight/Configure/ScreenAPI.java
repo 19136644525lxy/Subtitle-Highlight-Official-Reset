@@ -45,6 +45,8 @@ public class ScreenAPI implements ModMenuApi {
                     Manager.settings.bottomMargin = newValue;
                 }).build()).addEntry(builder.entryBuilder().startFloatField(Text.translatable("subtitle_highlight.configure.general.side_margin"), Manager.settings.sideMargin).setTooltip(Text.translatable("subtitle_highlight.configure.general.side_margin.tooltip_1"), Text.translatable("subtitle_highlight.configure.general.side_margin.tooltip_2")).setDefaultValue(1).setSaveConsumer((newValue) -> {
                     Manager.settings.sideMargin = newValue;
+                }).build()).addEntry(builder.entryBuilder().startBooleanToggle(Text.translatable("subtitle_highlight.configure.general.datapack_priority"), Manager.settings.datapackPriority).setTooltip(Text.translatable("subtitle_highlight.configure.general.datapack_priority.tooltip_1"), Text.translatable("subtitle_highlight.configure.general.datapack_priority.tooltip_2")).setDefaultValue(false).setSaveConsumer((newValue) -> {
+                    Manager.settings.datapackPriority = newValue;
                 }).build()).addEntry(builder.entryBuilder().startBooleanToggle(Text.translatable("subtitle_highlight.configure.general.ikun"), Manager.settings.ikunEasterEgg).setTooltip(Text.translatable("subtitle_highlight.configure.general.ikun.tooltip_1"), Text.translatable("subtitle_highlight.configure.general.ikun.tooltip_2")).setDefaultValue(true).setSaveConsumer((newValue) -> {
                     Manager.settings.ikunEasterEgg = newValue;
                 }).build()).setDescription(new MutableText[]{Text.translatable("subtitle_highlight.configure.general.description")});

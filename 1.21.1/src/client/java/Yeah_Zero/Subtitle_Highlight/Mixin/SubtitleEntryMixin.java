@@ -62,22 +62,12 @@ public class SubtitleEntryMixin {
                 if (keyParts[0].equals("subtitles")) {
                     switch (keyParts[1]) {
                         case "ambient", "weather" -> {
-                            ColorCode colorCode = SubtitleTypeLoader.getColor("", "ambient");
-                            if (colorCode != null) {
-                                cir.setReturnValue(subtitleText.formatted(colorCode.getFormatting()));
-                            } else {
-                                cir.setReturnValue(subtitleText.formatted(Manager.settings.colorSettings.ambient.getFormatting()));
-                            }
+                            applyColor(cir, subtitleText, SubtitleTypeLoader.getColor("", "ambient"), Manager.settings.colorSettings.ambient);
                             return;
                         }
                         case "block" -> {
                             if (keyParts[2].equals("generic")) {
-                                ColorCode colorCode = SubtitleTypeLoader.getColor("block", "generic");
-                                if (colorCode != null) {
-                                    cir.setReturnValue(subtitleText.formatted(colorCode.getFormatting()));
-                                } else {
-                                    cir.setReturnValue(subtitleText.formatted(Manager.settings.colorSettings.block.generic.getFormatting()));
-                                }
+                                applyColor(cir, subtitleText, SubtitleTypeLoader.getColor("block", "generic"), Manager.settings.colorSettings.block.generic);
                                 return;
                             }
                             String blockKey = keyParts[2];
@@ -113,16 +103,11 @@ public class SubtitleEntryMixin {
                             return;
                         }
                         case "chiseled_bookshelf", "ui" -> {
-                            cir.setReturnValue(subtitleText.formatted(Manager.settings.colorSettings.block.interact.getFormatting()));
+                            applyColor(cir, subtitleText, SubtitleTypeLoader.getColor("block", "interact"), Manager.settings.colorSettings.block.interact);
                             return;
                         }
                         case "enchant", "particle" -> {
-                            ColorCode colorCode = SubtitleTypeLoader.getColor("", "enchant");
-                            if (colorCode != null) {
-                                cir.setReturnValue(subtitleText.formatted(colorCode.getFormatting()));
-                            } else {
-                                cir.setReturnValue(subtitleText.formatted(Manager.settings.colorSettings.enchant.getFormatting()));
-                            }
+                            applyColor(cir, subtitleText, SubtitleTypeLoader.getColor("", "enchant"), Manager.settings.colorSettings.enchant);
                             return;
                         }
                         case "entity" -> {
@@ -180,12 +165,7 @@ public class SubtitleEntryMixin {
                             return;
                         }
                         case "event" -> {
-                            ColorCode colorCode = SubtitleTypeLoader.getColor("entity.mob", "hostile");
-                            if (colorCode != null) {
-                                cir.setReturnValue(subtitleText.formatted(colorCode.getFormatting()));
-                            } else {
-                                cir.setReturnValue(subtitleText.formatted(Manager.settings.colorSettings.entity.mob.hostile.getFormatting()));
-                            }
+                            applyColor(cir, subtitleText, SubtitleTypeLoader.getColor("entity.mob", "hostile"), Manager.settings.colorSettings.entity.mob.hostile);
                             return;
                         }
                         case "item" -> {
@@ -216,11 +196,9 @@ public class SubtitleEntryMixin {
                 PERF_LOGGER.warn("SubtitleAPI.processSubtitle took {}us", apiTime / 1000);
             }
             
-            ColorCode colorCode = SubtitleTypeLoader.getColor("", "other");
+            ColorCode colorCode = resolveColor(SubtitleTypeLoader.getColor("", "other"), Manager.settings.colorSettings.other);
             if (colorCode != null) {
                 processedText = ((MutableText) processedText).formatted(colorCode.getFormatting());
-            } else {
-                processedText = ((MutableText) processedText).formatted(Manager.settings.colorSettings.other.getFormatting());
             }
             
             cir.setReturnValue(processedText);
@@ -255,10 +233,19 @@ public class SubtitleEntryMixin {
     }
     
     private void applyColor(CallbackInfoReturnable<Text> cir, MutableText subtitleText, ColorCode dataColor, ColorCode configColor) {
-        if (dataColor != null) {
-            cir.setReturnValue(subtitleText.formatted(dataColor.getFormatting()));
-        } else {
-            cir.setReturnValue(subtitleText.formatted(configColor.getFormatting()));
+        ColorCode color = resolveColor(dataColor, configColor);
+        if (color != null) {
+            cir.setReturnValue(subtitleText.formatted(color.getFormatting()));
         }
+    }
+
+    /**
+     * 解析最终颜色。默认配置界面优先；开启 {@code Manager.settings.datapackPriority} 后数据包优先。
+     */
+    private static ColorCode resolveColor(ColorCode dataColor, ColorCode configColor) {
+        if (Manager.settings.datapackPriority) {
+            return dataColor != null ? dataColor : configColor;
+        }
+        return configColor != null ? configColor : dataColor;
     }
 }

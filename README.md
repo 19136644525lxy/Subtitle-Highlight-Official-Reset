@@ -53,7 +53,9 @@ gradle build
 ## 数据包支持
 创建 `data/subtitle_highlight/subtitle_types.json` 自定义字幕颜色配置
 
-数据包颜色优先级高于配置界面：仅当数据包未定义某个字幕类型时，才会使用 `config/subtitle_highlight.json` 中的颜色。内置数据包已覆盖全部类型，因此若不覆盖或移除内置数据包，配置界面中的颜色项不会生效。
+默认以配置界面（`config/subtitle_highlight.json`）中的颜色为准，只有配置界面没有定义的颜色才回退到数据包，所以改配置界面的颜色会立刻生效。
+
+如果希望数据包反过来覆盖配置界面，可在配置界面的「通用」分类中打开「数据包颜色优先」（对应配置项 `datapackPriority`，默认 `false`）。
 
 ## 开源协议
 本项目基于 **GNU Lesser General Public License v3.0** 发布。
