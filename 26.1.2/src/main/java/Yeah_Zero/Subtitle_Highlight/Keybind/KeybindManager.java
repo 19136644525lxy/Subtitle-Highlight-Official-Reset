@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
@@ -26,49 +27,49 @@ public class KeybindManager {
 
         toggleSubtitles = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.toggle_subtitles",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         increaseScale = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.increase_scale",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         decreaseScale = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.decrease_scale",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         reloadConfig = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.reload_config",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         saveConfig = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.save_config",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         toggleIkunEasterEgg = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.toggle_ikun",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         increaseOpacity = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.increase_opacity",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
         decreaseOpacity = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.subtitle_highlight.decrease_opacity",
-                -1,
+                InputConstants.UNKNOWN.getValue(),
                 category
         ));
 
