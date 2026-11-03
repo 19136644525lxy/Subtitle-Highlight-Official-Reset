@@ -9,7 +9,6 @@ import net.minecraft.client.gui.components.SubtitleOverlay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
  *   <li>{@code @ModifyConstant} 把写死的 3000ms 字幕存活时长换成配置里的 {@code maxDuration}；</li>
  *   <li>{@code @ModifyArgs} 调整 {@code Matrix3x2fStack.translate/scale} 实现位置与缩放；</li>
  *   <li>{@code @ModifyArgs} 调整 {@code fill} 的背景色；</li>
- *   <li>{@code @ModifyArgs} 调整 {@code text} 的文字颜色，实现 startRatio → endRatio 的亮度渐变。</li>
+ *   <li>{@code @ModifyArgs} 调整 {@code text} 的文字颜色，按配置着色且不随播放进度变暗。</li>
  * </ul>
  *
  * <p>原版在该方法里算出一个 0~255 的灰度 {@code alpha}（{@code clampedLerp(255, 75, 已播放比例)}），
@@ -42,10 +41,6 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Environment(EnvType.CLIENT)
 @Mixin(SubtitleOverlay.class)
 public class SubtitlesHudMixin {
-    /** 原版用于计算透明度的灰度区间：起始 255、结束 75。 */
-    private static final float VANILLA_FADE_START = 255.0F;
-    private static final float VANILLA_FADE_END = 75.0F;
-
     @Shadow
     @Final
     private Minecraft minecraft;
@@ -87,35 +82,22 @@ public class SubtitlesHudMixin {
     }
 
     /**
-     * 调整字幕文字颜色：保留字幕自身的颜色，按已播放比例在 startRatio → endRatio 之间做亮度渐变。
+     * 调整字幕文字颜色：只按配置把字幕染成对应颜色，不做随时间变化的亮度渐变。
      *
-     * <p>原版传进来的颜色是 {@code ARGB.color(255, alpha, alpha, alpha)}，灰度值即「剩余亮度」。
-     * 由此反推已播放比例 {@code ratio = (255 - alpha) / (255 - 75)}，再对字幕彩色文本做同样的亮度缩放。
+     * <p>原版传进来的颜色是 {@code ARGB.color(255, alpha, alpha, alpha)}，alpha 会随播放进度从 255 降到 75，
+     * 直接沿用会让字幕逐渐变暗。这里整段换成配置颜色并把 alpha 固定为不透明，字幕结束前颜色保持不变。
      */
     @ModifyArgs(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V"))
     private void modifySubtitleDisplayColor(Args args) {
         Component text = args.get(1);
-        int originalColor = args.get(4);
 
         TextColor styleColor = text.getStyle().getColor();
-        int rgb = styleColor != null ? styleColor.getValue() : 0xFFFFFF;
-        int red = (rgb >> 16) & 0xFF;
-        int green = (rgb >> 8) & 0xFF;
-        int blue = rgb & 0xFF;
-
-        // 原版灰度（0~255）反推已播放比例，clamp 到 [0,1] 避免超出区间后被倒推成负数。
-        int vanillaGrey = (originalColor >> 16) & 0xFF;
-        double ratio = (VANILLA_FADE_START - vanillaGrey) / (VANILLA_FADE_START - VANILLA_FADE_END);
-        ratio = Mth.clamp(ratio, 0.0D, 1.0D);
-        double fade = Mth.clampedLerp(Manager.settings.startRatio, Manager.settings.endRatio, ratio);
+        int rgb = styleColor != null ? styleColor.getValue() & 0xFFFFFF : 0xFFFFFF;
 
         // 去掉字幕文本自带的颜色，否则原版会用样式色覆盖这里传进去的 ARGB。
         Style stripped = text.getStyle().withColor((TextColor) null);
         args.set(1, Component.literal(text.getString()).withStyle(stripped));
 
-        int redFaded = Mth.floor((float) (red * fade));
-        int greenFaded = Mth.floor((float) (green * fade));
-        int blueFaded = Mth.floor((float) (blue * fade));
-        args.set(4, 0xFF000000 | (redFaded << 16) | (greenFaded << 8) | blueFaded);
+        args.set(4, 0xFF000000 | rgb);
     }
 }

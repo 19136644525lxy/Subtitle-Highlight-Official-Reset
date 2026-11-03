@@ -10,9 +10,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Environment(EnvType.CLIENT)
 public class KeybindManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger("subtitle_highlight/keyguard");
+
+    private static boolean subtitle_highlight$bindingsChecked;
     private static KeyMapping toggleSubtitles;
     private static KeyMapping increaseScale;
     private static KeyMapping decreaseScale;
@@ -76,7 +81,31 @@ public class KeybindManager {
         ClientTickEvents.END_CLIENT_TICK.register(KeybindManager::handleKeybinds);
     }
 
+    /**
+     * 扫描一次全部按键绑定：旧版本曾把未绑定键写成 -1（26.x 里 SDL 扫描码不接受 -1），
+     * 这里把这类历史脏数据重置为 UNKNOWN，并记录具体是哪个键，避免按键界面显示 key.keyboard.-1。
+     */
+    private static void repairInvalidBindings(Minecraft client) {
+        if (subtitle_highlight$bindingsChecked) return;
+        subtitle_highlight$bindingsChecked = true;
+        boolean changed = false;
+        for (KeyMapping mapping : client.options.keyMappings) {
+            if (mapping == null) continue;
+            String saved = mapping.saveString();
+            if (saved != null && saved.contains("-1")) {
+                LOGGER.warn("Invalid key binding {} ({}); resetting to unbound", mapping.getName(), saved);
+                mapping.setKey(InputConstants.UNKNOWN);
+                changed = true;
+            }
+        }
+        if (changed) {
+            client.options.save();
+        }
+    }
+
     private static void handleKeybinds(Minecraft client) {
+        repairInvalidBindings(client);
+
         if (client.player == null) return;
 
         while (toggleSubtitles.consumeClick()) {
